@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7f8fa">
+<meta name="description" content="مختبر تفاعلي لحركة المقذوفات — الفيزياء، الصف العاشر. يعمل بالكامل دون إنترنت.">
+<title>مختبر النصر</title>
+<style>
+/* 01 · Instrument shell and responsive classroom layout */
+:root{--bg:#f7f8fa;--paper:#fff;--ink:#243247;--muted:#66758a;--blue:#3478c8;--blue-soft:#eaf2fc;--teal:#238c9d;--orange:#df8137;--purple:#9460b6;--line:#e2e7ed;--radius:18px;font-size:clamp(14px,.95vw,18px);font-family:Tahoma,Arial,sans-serif;color:var(--ink)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);overflow:hidden}button,input,select{font:inherit}button{cursor:pointer;color:inherit;touch-action:manipulation}button,input,select{outline-offset:3px}button:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #3478c8}button{border:1px solid var(--line);background:#fff;border-radius:10px;min-height:44px;padding:9px 14px;transition:background .15s,border-color .15s,transform .15s}button:active{transform:translateY(1px)}button:disabled{cursor:default;opacity:.45}button.active,button[aria-pressed="true"]{color:#235f9e;border-color:#b7d2ee;background:var(--blue-soft)}button.primary{background:var(--blue);border-color:var(--blue);color:#fff}button.quiet{background:transparent;border-color:transparent}button.icon{min-width:44px;padding:8px;display:inline-grid;place-items:center}.icon svg,button>svg{width:21px;height:21px;vertical-align:middle;flex-shrink:0}button>svg{margin-inline-end:5px}button.icon>svg{margin:0}.muted{color:var(--muted)}.small{font-size:.8rem}.latin,bdi,input[type=number],.value{font-family:Arial,Tahoma,sans-serif;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}.unit{font-size:.73em;color:var(--muted);font-weight:400;margin-inline-start:4px}h1,h2,h3,p{margin:0}h2{font-size:1rem}h3{font-size:.95rem}[hidden]{display:none!important}
+.app{height:100vh;height:100dvh;display:flex;flex-direction:column;padding:0 22px;gap:14px;max-width:2400px;margin:auto}.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:76px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px}.brand-mark{background:var(--blue);color:white;width:47px;height:47px;border-radius:14px;display:grid;place-items:center}.brand-mark svg{width:33px;height:33px}.brand h1{font-size:1.45rem;line-height:1.4}.brand p{font-size:.74rem;color:var(--muted);letter-spacing:.04em}.top-actions{display:flex;align-items:center;gap:7px}.grade{font-size:.8rem;color:var(--muted);margin-inline-end:12px}.workspace{flex:1;min-height:0;display:grid;direction:ltr;grid-template-columns:260px minmax(0,1fr) 260px;gap:16px}.panel{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);direction:rtl;min-width:0;overflow:hidden}.side{padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;scrollbar-width:thin}.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:8px}.eyebrow{font-size:.71rem;letter-spacing:.06em;color:var(--muted);direction:ltr}.launcher-preview{height:105px;background:#f6f8fb;border:1px solid #edf0f4;border-radius:12px;display:flex;align-items:center;justify-content:center;position:relative}.launcher-preview svg{height:90px;width:170px}.launcher-preview button{position:absolute;bottom:7px;left:7px;background:white;font-size:.77rem;min-height:38px;padding:6px 10px}.parameter{border-bottom:1px solid #eef1f4;padding-bottom:9px}.parameter:last-child{border:0}.param-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.param-label{font-size:.9rem;line-height:1.6}.param-label bdi{display:block;color:var(--muted);font-size:.73rem}.number-box{display:flex;align-items:center;direction:ltr;border:1px solid #d8e1eb;border-radius:8px;background:#fafbfd;overflow:hidden;flex-shrink:0}.number-box input{width:66px;border:0;background:transparent;color:var(--ink);padding:9px 2px 9px 7px;font-size:1.05rem;font-weight:600;appearance:textfield;-moz-appearance:textfield;text-align:center}.number-box input::-webkit-inner-spin-button{appearance:none}.number-box span{padding-right:8px;font-size:.73rem;color:var(--muted)}input[type=range]{accent-color:var(--blue);width:100%;height:28px;margin:6px 0 0;cursor:pointer;touch-action:none;direction:ltr;background:transparent;-webkit-appearance:none;appearance:none}input[type=range]::-webkit-slider-runnable-track{height:5px;background:#dce6f1;border-radius:10px}input[type=range]::-webkit-slider-thumb{appearance:none;width:23px;height:23px;background:var(--blue);border:4px solid white;border-radius:50%;margin-top:-9px;box-shadow:0 0 0 1px #b5cce4,0 2px 5px #24324722}input[type=range]::-moz-range-track{height:5px;background:#dce6f1;border-radius:10px}input[type=range]::-moz-range-thumb{width:16px;height:16px;background:var(--blue);border:4px solid white;border-radius:50%;box-shadow:0 0 0 1px #b5cce4}.range-ends{display:flex;justify-content:space-between;direction:ltr;font-size:.69rem;color:var(--muted)}.model-note{margin-top:auto;font-size:.76rem;color:var(--muted);line-height:1.8;background:#f6f8fb;padding:11px;border-radius:10px}.side .reset{font-size:.83rem;width:100%;min-height:42px}
+.simulation{display:flex;flex-direction:column;position:relative}.scene-header{padding:17px 20px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}.scene-header .subtitle{font-size:.75rem;color:var(--muted);margin-top:7px}.scene-tools{display:flex;gap:4px}.scene-tools button{font-size:.8rem}.vector-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:0 20px 12px;border-bottom:1px solid #edf0f4}.vector-bar>span{font-size:.74rem;color:var(--muted);margin-inline-end:3px}.vector-chip{font-size:.8rem;min-height:38px;padding:6px 9px;direction:ltr;border-color:transparent;background:#f5f7fa;display:flex;align-items:center;gap:7px}.vector-chip i{width:7px;height:7px;border-radius:50%;background:var(--c)}.vector-chip[aria-pressed=true]{color:var(--c);background:color-mix(in srgb,var(--c) 9%,white);border-color:color-mix(in srgb,var(--c) 35%,white)}.canvas-wrap{flex:1;min-height:180px;position:relative;overflow:hidden;direction:ltr}.scene-svg{display:block;width:100%;height:100%;touch-action:none;user-select:none;-webkit-user-select:none}.scene-svg text{font-family:Tahoma,Arial,sans-serif;paint-order:stroke;stroke:#fff;stroke-width:4px;stroke-linejoin:round}.scene-tag{position:absolute;top:15px;right:18px;font-size:.73rem;direction:rtl;display:flex;align-items:center;gap:8px;pointer-events:none}.status-dot{height:6px;width:6px;background:var(--blue);border-radius:50%}.scene-legend{position:absolute;top:17px;left:18px;display:flex;gap:16px;font-size:.72rem;pointer-events:none;direction:rtl}.scene-legend span:before{content:'';display:inline-block;width:20px;border-top:2px dashed var(--blue);margin-left:6px;vertical-align:middle}.scene-legend .saved:before{border-color:var(--purple)}.scene-bottom{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-top:1px solid #edf0f4;gap:8px;min-height:55px}.scene-bottom button{font-size:.78rem;min-height:40px;padding:7px 10px}.scene-bottom .scene-caption{font-size:.69rem;color:var(--muted);text-align:center;line-height:1.6}.reading-time{background:var(--blue-soft);border-radius:12px;padding:15px;display:flex;align-items:center;justify-content:space-between;color:#285f9d}.reading-time strong{font-size:1.5rem;font-weight:500}.reading-section{display:flex;flex-direction:column;gap:0}.section-label{color:var(--muted);font-size:.74rem;margin-bottom:7px}.reading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 0;border-bottom:1px solid #f0f2f5;font-size:.85rem}.reading:last-child{border:0}.reading .value{font-size:1.12rem;font-weight:600;white-space:nowrap}.reading em{font-style:normal;color:var(--muted);margin-inline-start:4px}.reading.velocity .value{color:var(--teal)}.reading.gravity .value{color:#bf692c}.reading.force .value{color:var(--purple)}.insight{font-size:.8rem;line-height:1.8;padding:12px;border-right:3px solid var(--blue);background:#f2f7fd;border-radius:8px;margin-top:auto;min-height:65px}.analysis-buttons{display:flex;flex-direction:column;gap:7px}.analysis-buttons button{font-size:.83rem}.drawer{border-top:1px solid var(--line);background:#fcfdff;flex-shrink:0;height:260px;display:flex;flex-direction:column;padding:12px 16px;gap:8px;overflow:auto}.drawer-heading{display:flex;justify-content:space-between;align-items:center;gap:8px}.drawer-heading p{font-size:.75rem;color:var(--muted)}.drawer-actions{display:flex;gap:5px}.drawer button{min-height:36px;padding:6px 10px;font-size:.76rem}.graphs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;flex:1;direction:ltr;min-height:0}.graph-card{border:1px solid var(--line);border-radius:10px;background:white;display:flex;flex-direction:column;overflow:hidden;min-width:0}.graph-card h3{font-size:.72rem;direction:rtl;text-align:center;padding:9px 3px 0}.graph-card svg{width:100%;flex:1;min-height:90px;touch-action:none;user-select:none}.comparison-table{border-collapse:collapse;width:100%;font-size:.76rem;text-align:center;white-space:nowrap}.comparison-table th{font-weight:400;color:var(--muted);padding:10px 5px;border-bottom:1px solid var(--line)}.comparison-table td{padding:12px 5px;border-bottom:1px solid #edf0f4;font-size:.9rem}.comparison-table .name{font-weight:600}.comparison-note{font-size:.77rem;color:var(--muted);line-height:1.8}.comparison-empty{display:grid;place-items:center;flex:1;text-align:center;gap:5px}.comparison-empty p{font-size:.85rem;color:var(--muted)}
+.playback{border:1px solid var(--line);border-radius:var(--radius);background:white;display:grid;grid-template-columns:minmax(0,1fr) 435px;direction:ltr;flex-shrink:0;overflow:hidden}.transport{padding:15px 20px;display:flex;flex-direction:column;justify-content:center;gap:7px}.transport-buttons{display:flex;align-items:center;gap:7px;direction:rtl}.transport-buttons .play{min-width:110px}.transport-buttons .peak{font-size:.83rem}.transport-buttons .speed-label{font-size:.74rem;color:var(--muted);margin-inline-start:auto}.speeds{display:flex;gap:3px;direction:ltr}.speeds button{font: .8rem Arial;min-width:42px;padding:7px}.timeline-row{display:flex;align-items:center;gap:12px;direction:ltr}.timeline-row input{margin:0}.timeline-row time{font: .78rem Arial;white-space:nowrap;color:var(--muted);min-width:72px}.results{display:grid;grid-template-columns:repeat(3,1fr);border-left:1px solid var(--line);direction:rtl;background:#fcfdff;align-items:center}.result{text-align:center;padding:12px;border-left:1px solid var(--line)}.result:last-child{border:0}.result label{display:block;color:var(--muted);font-size:.78rem;margin-bottom:12px}.result strong{font:500 1.75rem Arial;display:block;color:#2d65a5;white-space:nowrap}.result .unit{display:block;font-size:.7rem;margin-top:8px}.footer{min-height:24px;display:flex;align-items:center;justify-content:space-between;font-size:.68rem;color:var(--muted);padding:0 4px 7px}.footer b{font-weight:400;color:#326f78}.mobile-analysis{display:none}.toast{position:fixed;bottom:170px;left:50%;transform:translateX(-50%);padding:12px 24px;background:#243247;color:white;border-radius:12px;font-size:.85rem;z-index:20;box-shadow:0 5px 25px #24324722;pointer-events:none;text-align:center;max-width:85vw}
+/* 02 · Touch-friendly selection and help dialogs */
+dialog{border:1px solid var(--line);border-radius:22px;padding:26px;color:var(--ink);max-width:min(850px,92vw);width:850px;box-shadow:0 25px 90px #24324730;max-height:90dvh;overflow:auto;background:white}dialog::backdrop{background:#24324750;backdrop-filter:blur(3px)}.dialog-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}.dialog-top h2{font-size:1.3rem}.dialog-subtitle{font-size:.86rem;line-height:1.8;color:var(--muted);margin-bottom:20px}.library-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.asset-card{padding:15px;min-height:230px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;border-radius:14px}.asset-card svg{width:100%;height:100px}.asset-card strong{font-size:.94rem}.asset-card p{font-size:.78rem;line-height:1.8;color:var(--muted);font-weight:400}.asset-card .selection{font-size:.75rem;margin-top:auto;color:var(--blue)}.help-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.help-block{border:1px solid var(--line);border-radius:12px;padding:15px;font-size:.88rem;line-height:1.9}.help-block h3{margin-bottom:8px;color:var(--blue)}.equations{direction:ltr;text-align:left;font: .9rem/2 Arial;background:#f7f9fc;border-radius:10px;padding:14px;margin-top:16px}.help-foot{font-size:.76rem;color:var(--muted);margin-top:15px;line-height:1.8}body,button,svg{-webkit-tap-highlight-color:transparent}button,svg,.range-ends,.param-label{user-select:none;-webkit-user-select:none}
+@media(min-width:1700px){.workspace{grid-template-columns:280px minmax(0,1fr) 280px;gap:20px}.side{padding:23px;gap:18px}.parameter{padding-bottom:15px}.launcher-preview{height:125px}.reading{padding:13px 0}.playback{grid-template-columns:minmax(0,1fr) 520px}.transport{padding:18px 24px}.app{gap:18px;padding:0 26px}.drawer{height:285px}.topbar{min-height:76px}}
+@media(max-height:850px){.app{gap:10px;padding:0 14px}.topbar{min-height:74px}.side{padding:14px;gap:9px}.launcher-preview{height:73px}.launcher-preview svg{height:68px}.parameter{padding-bottom:5px}.param-label bdi{display:none}.number-box input{padding-top:6px;padding-bottom:6px}.model-note{padding:7px;font-size:.72rem}.reading{padding:8px 0}.reading-time{padding:10px}.insight{padding:8px;min-height:52px}.scene-header{padding:12px 15px 8px}.vector-bar{padding:0 14px 7px}.scene-header .subtitle{margin-top:4px}.transport{padding:10px 14px}.result label{margin-bottom:7px}.result .unit{margin-top:5px}.result strong{font-size:1.5rem}.footer{min-height:18px}.drawer{height:215px}.scene-bottom{padding:5px 9px;min-height:48px}}
+@media(max-width:1350px){.workspace{grid-template-columns:230px minmax(0,1fr) 235px;gap:10px}.side{padding:14px}.playback{grid-template-columns:minmax(0,1fr) 360px}.grade{display:none}.brand h1{font-size:1.25rem}.vector-chip{padding:5px 7px}.vector-bar{gap:4px}.scene-caption{display:none}.transport-buttons{gap:4px}.speeds button{min-width:36px}.scene-tools .tool-label{display:none}.drawer{padding:8px}.graphs{gap:5px}}
+@media(max-width:1100px){.workspace{grid-template-columns:220px minmax(0,1fr)}.analysis-panel{display:none}.mobile-analysis{display:inline-grid}.workspace.analysis-open{grid-template-columns:220px minmax(0,1fr) 220px}.workspace.analysis-open .analysis-panel{display:flex}.playback{grid-template-columns:minmax(0,1fr) 300px}.transport-buttons .speed-label{display:none}.brand p{display:none}.topbar{gap:10px}.result{padding:8px}.result label{font-size:.72rem}.vector-bar>span{display:none}}
+@media(max-width:820px){.app{padding:0 8px}.workspace{grid-template-columns:185px minmax(0,1fr)}.side{padding:10px}.brand h1{font-size:1rem}.brand-mark{width:36px;height:36px}.topbar{min-height:63px;gap:5px}.top-actions{gap:1px}.playback{grid-template-columns:1fr}.results{display:none}.transport-buttons .speed-label{display:none}.scene-header .subtitle{display:none}.workspace.analysis-open{grid-template-columns:185px minmax(0,1fr)}.workspace.analysis-open .analysis-panel{position:absolute;right:10px;top:76px;bottom:150px;width:235px;z-index:5;box-shadow:0 10px 35px #24324730}.library-grid{gap:7px}.asset-card{padding:9px;min-height:210px}.help-grid{grid-template-columns:1fr}.footer span:last-child{display:none}}
+/* Keep every primary control visible at classroom landscape sizes. */
+.side{gap:12px}.launcher-preview{height:94px;flex-shrink:0}.parameter{padding:0 0 4px}.param-label bdi{display:inline;margin-inline-start:6px}.param-top{min-height:42px}.parameter input[type=range]{margin:0;height:28px}.range-ends{font-size:.67rem;line-height:1.2}.model-note{font-size:.73rem;padding:9px}.reading{padding:9px 0}.reading-section{flex-shrink:0}.reading-time{flex-shrink:0}.analysis-panel .insight{min-height:0}.analysis-buttons{flex-shrink:0}.scene-bottom{direction:ltr}.scene-bottom button,.scene-bottom .scene-caption{direction:rtl}button.icon.mobile-analysis{display:none}.compare-short{display:none}
+@media(max-width:1350px){.compare-short[hidden]{display:inline!important}}
+@media(max-width:1100px){button.icon.mobile-analysis{display:inline-grid}}
+@media(max-height:850px){.side{gap:8px}.launcher-preview{height:64px}.model-note{display:none}.param-top{min-height:34px}.param-label bdi,.range-ends{display:none}.parameter{padding-bottom:3px}.parameter input[type=range]{height:26px}.reading{padding:6px 0}.section-label{margin-bottom:3px}.insight{font-size:.74rem}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.param-label bdi{margin:0 6px}.insight{flex-shrink:0}
+@media(max-height:740px){.side{gap:5px}.side .launcher-preview{height:53px}.side .launcher-preview svg{height:52px}.analysis-panel .insight{font-size:.7rem;padding:6px}}
+@media(max-height:850px){.analysis-panel{gap:7px}.drawer{position:absolute;inset:95px 10px 10px;z-index:3;height:auto!important;border:1px solid #cbd9e8;border-radius:13px;box-shadow:0 8px 30px #24324718;padding:12px}.graphs{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr))}.graph-card svg{min-height:0}.graph-card h3{padding-top:5px}}
+@media(max-height:740px){.analysis-panel .insight{display:none}}
+@media(max-height:850px){.drawer{top:55px}}
+.app{padding-bottom:14px;gap:12px}.scene-header{padding-top:10px;padding-bottom:8px}.vector-bar{padding-bottom:8px}.reading-time{background:transparent;border-radius:0;border-bottom:1px solid var(--line);padding:10px 0}.analysis-buttons{margin-top:auto}.controls-panel .reset{margin-top:auto}.ground-object{cursor:grab;touch-action:none}.scene-svg.dragging,.scene-svg.dragging .ground-object{cursor:grabbing}.ground-object:focus-visible{outline:none}.ground-object:focus-visible .object-hit{stroke:var(--blue);stroke-width:2;stroke-dasharray:4 3}.help-block{border:0;border-radius:0;padding:9px 0}.help-grid{column-gap:25px}
+</style>
+</head>
+<body>
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden"><defs>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z" fill="currentColor"/></symbol>
+<symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h4v14H7zm7 0h4v14h-4z" fill="currentColor"/></symbol>
+<symbol id="i-reset" viewBox="0 0 24 24"><path d="M4 10a8 8 0 1 1 1 7M4 4v6h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M12 11v6m0-10v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-full" viewBox="0 0 24 24"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-peak" viewBox="0 0 24 24"><path d="M3 19Q12-9 21 19" fill="none" stroke="currentColor" stroke-width="1.7" stroke-dasharray="3 2"/><circle cx="12" cy="5" r="3" fill="currentColor"/></symbol>
+<symbol id="i-graph" viewBox="0 0 24 24"><path d="M4 3v17h17M7 16Q12 0 20 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M6 18L18 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+<symbol id="i-grid" viewBox="0 0 24 24"><path d="M4 4h16v16H4zm0 8h16M12 4v16" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+<symbol id="i-back" viewBox="0 0 24 24"><path d="M6 5v14m12-14L8 12l10 7z" stroke="currentColor" fill="currentColor" stroke-width="1.5"/></symbol>
+<symbol id="i-next" viewBox="0 0 24 24"><path d="M18 5v14M6 5l10 7-10 7z" stroke="currentColor" fill="currentColor" stroke-width="1.5"/></symbol>
+</defs></svg>
+<div class="app">
+ <header class="topbar">
+  <div class="brand"><div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M5 32h30M7 29Q20-9 34 27" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 3"/><circle cx="22" cy="13" r="4" fill="white"/></svg></div><div><h1>مختبر النصر</h1><p>المختبر الحر</p></div></div>
+  <div class="top-actions"><span class="grade">الفيزياء · الصف العاشر</span><button class="icon mobile-analysis" id="analysisToggle" aria-label="إظهار التحليل العلمي" aria-pressed="false"><svg><use href="#i-graph"/></svg></button><button class="icon" id="helpBtn" aria-label="شرح النموذج الفيزيائي"><svg><use href="#i-info"/></svg></button><button class="icon" id="fullscreenBtn" aria-label="ملء الشاشة"><svg><use href="#i-full"/></svg></button></div>
+ </header>
+ <main class="workspace" id="workspace">
+  <aside class="panel side controls-panel" aria-label="إعدادات الإطلاق">
+   <div class="panel-heading"><h2>الإطلاق</h2></div>
+   <div class="launcher-preview"><div id="launcherPreview"></div><button id="projectilePickerTop" aria-haspopup="dialog">تغيير النموذج</button></div>
+   <div id="parameters"></div>
+   <button class="reset" id="defaultsBtn"><svg><use href="#i-reset"/></svg>استعادة الإعدادات</button>
+  </aside>
+  <section class="panel simulation" aria-label="مساحة المحاكاة">
+   <div class="scene-header"><div><h2>المحاكاة</h2></div><div class="scene-tools"><button id="gridToggle" aria-pressed="true"><svg><use href="#i-grid"/></svg><span class="tool-label">الشبكة</span></button><button id="compareBtn"><span class="tool-label">مقارنة</span><span class="compare-short" hidden>مقارنة</span></button></div></div>
+   <div class="vector-bar"><span>المتجهات</span><button class="vector-chip" data-vector="vx" aria-pressed="true" style="--c:#238c9d"><i></i>vₓ</button><button class="vector-chip" data-vector="vy" aria-pressed="true" style="--c:#3478c8"><i></i>vᵧ</button><button class="vector-chip" data-vector="v" aria-pressed="false" style="--c:#297a65"><i></i>v</button><button class="vector-chip" data-vector="g" aria-pressed="true" style="--c:#df8137"><i></i>g</button><button class="vector-chip" data-vector="f" aria-pressed="false" style="--c:#9460b6"><i></i>Fɢ</button><button class="icon quiet" id="vectorsHelp" aria-label="شرح المتجهات ومقاييسها"><svg><use href="#i-info"/></svg></button></div>
+   <div class="canvas-wrap" id="canvasWrap"><svg id="scene" class="scene-svg" role="group" aria-label="مسار المقذوف على محورين متساويي المقياس" tabindex="0"></svg><div class="scene-tag"><span class="status-dot"></span><span id="statusText">جاهز للإطلاق</span></div><div class="scene-legend"><span id="currentLegend">المسار المتوقع</span><span class="saved" id="savedLegend" hidden>التجربة A</span></div></div>
+   <div class="scene-bottom"><button id="projectilePickerScene" aria-haspopup="dialog">النموذج: <span id="modelName"></span></button><button id="groundPicker" aria-haspopup="dialog">عنصر أرضي: <span id="groundName">بدون</span></button></div>
+   <section class="drawer" id="drawer" hidden aria-label="التحليل الموسع"></section>
+  </section>
+  <aside class="panel side analysis-panel" aria-label="التحليل العلمي المباشر">
+   <div class="panel-heading"><h2>التحليل</h2></div>
+   <div class="reading-time"><span class="small">الزمن الحالي</span><strong class="latin"><span id="readTime">0.00</span> <span class="unit">s</span></strong></div>
+   <section class="reading-section"><p class="section-label">الموقع</p><div class="reading"><span>أفقي <em dir="ltr">x</em></span><span class="value"><span id="readX"></span><span class="unit">m</span></span></div><div class="reading"><span>رأسي <em dir="ltr">y</em></span><span class="value"><span id="readY"></span><span class="unit">m</span></span></div></section>
+   <section class="reading-section"><p class="section-label">السرعة</p><div class="reading velocity"><span>أفقية <em dir="ltr">vₓ</em></span><span class="value"><span id="readVx"></span><span class="unit">m/s</span></span></div><div class="reading velocity"><span>رأسية <em dir="ltr">vᵧ</em></span><span class="value"><span id="readVy"></span><span class="unit">m/s</span></span></div><div class="reading velocity"><span>المقدار <em dir="ltr">v</em></span><span class="value"><span id="readV"></span><span class="unit">m/s</span></span></div></section>
+   <section class="reading-section"><p class="section-label">التسارع والقوة</p><div class="reading"><span>التسارع الأفقي</span><span class="value">0<span class="unit">m/s²</span></span></div><div class="reading gravity"><span>التسارع الرأسي</span><span class="value"><span id="readAy"></span><span class="unit">m/s²</span></span></div><div class="reading force"><span>القوة <em dir="ltr">Fᵧ</em></span><span class="value"><span id="readFy"></span><span class="unit">N</span></span></div><p class="small muted" style="text-align:center;margin-top:5px">أفقيًا <bdi>Fₓ = 0 N</bdi> · الأعلى موجب</p></section>
+   <div class="analysis-buttons"><button id="graphsBtn"><svg><use href="#i-graph"/></svg>الرسوم البيانية</button></div>
+  </aside>
+ </main>
+ <section class="playback" aria-label="التحكم بالحركة ونتائج التجربة">
+  <div class="transport"><div class="transport-buttons"><button id="playBtn" class="primary play"><svg><use href="#i-play"/></svg><span>تشغيل</span></button><button id="pauseBtn" class="icon" aria-label="إيقاف مؤقت"><svg><use href="#i-pause"/></svg></button><button id="restartBtn" class="icon" aria-label="إعادة الزمن إلى البداية"><svg><use href="#i-reset"/></svg></button><button id="peakBtn" class="peak"><svg><use href="#i-peak"/></svg>أعلى نقطة</button><button id="stepNext" class="icon" aria-label="خطوة للأمام بمقدار 0.05 ثانية"><svg><use href="#i-next"/></svg></button><button id="stepBack" class="icon" aria-label="خطوة للخلف بمقدار 0.05 ثانية"><svg><use href="#i-back"/></svg></button><span class="speed-label">سرعة العرض</span><div class="speeds" aria-label="سرعة العرض"><button data-speed="0.25" aria-pressed="false">¼×</button><button data-speed="0.5" aria-pressed="false">½×</button><button data-speed="1" aria-pressed="true">1×</button><button data-speed="2" aria-pressed="false">2×</button></div><button id="compactGraphs" class="icon mobile-analysis" aria-label="الرسوم البيانية"><svg><use href="#i-graph"/></svg></button></div><div class="timeline-row"><time id="timelineNow">0.00 s</time><input type="range" id="timeline" min="0" max="1" step="any" value="0" aria-label="الزمن على مسار المقذوف"><time id="timelineEnd">0.00 s</time></div></div>
+  <div class="results"><div class="result"><label>المدى الأفقي</label><strong id="rangeResult"></strong><span class="unit">متر · m</span></div><div class="result"><label>أقصى ارتفاع</label><strong id="heightResult"></strong><span class="unit">متر · m</span></div><div class="result"><label>زمن التحليق</label><strong id="flightResult"></strong><span class="unit">ثانية · s</span></div></div>
+ </section>
+</div>
+<dialog id="libraryDialog" aria-labelledby="libraryTitle"><div class="dialog-top"><h2 id="libraryTitle"></h2><button class="icon" data-close aria-label="إغلاق المكتبة"><svg><use href="#i-close"/></svg></button></div><p class="dialog-subtitle" id="librarySubtitle"></p><div class="library-grid" id="libraryGrid"></div></dialog>
+<dialog id="helpDialog" aria-labelledby="helpTitle"><div class="dialog-top"><h2 id="helpTitle">كيف نقرأ حركة المقذوف؟</h2><button class="icon" data-close aria-label="إغلاق الشرح"><svg><use href="#i-close"/></svg></button></div><p class="dialog-subtitle">نختار الاتجاه الرأسي إلى أعلى موجبًا، ونحسب الحركة حتى أول ملامسة للأرض.</p><div class="help-grid"><div class="help-block"><h3>حركتان مستقلتان</h3>أفقيًا: سرعة ثابتة. رأسيًا: تسارع إلى أسفل.</div><div class="help-block"><h3>عند أعلى نقطة</h3><bdi>vᵧ = 0</bdi>، والجاذبية والقوة مستمرتان إلى أسفل؛ لا يوجد اتزان.</div><div class="help-block"><h3>مقاييس المتجهات</h3>للسرعات مقياس مشترك، وللجاذبية مقياس مستقل. سهم القوة رمزي؛ اقرأ القيم والوحدات.</div><div class="help-block"><h3>ما الذي يفترضه المختبر؟</h3>بلا مقاومة هواء أو دفع. الكتلة تغيّر الوزن، لا المسار. العناصر الأرضية بصرية فقط.</div></div><div class="equations">x = v₀ cos(θ) t &nbsp; | &nbsp; y = h₀ + v₀ sin(θ) t − ½gt²<br>vₓ = v₀ cos(θ) &nbsp; | &nbsp; vᵧ = v₀ sin(θ) − gt &nbsp; | &nbsp; v = √(vₓ² + vᵧ²)<br>aₓ = 0 &nbsp; | &nbsp; aᵧ = −g &nbsp; | &nbsp; Fₓ = 0 &nbsp; | &nbsp; Fᵧ = −mg<br>t_peak = v₀ sin(θ) / g &nbsp; | &nbsp; H = h₀ + (v₀ sin(θ))² / (2g)<br>T = [v₀ sin(θ) + √((v₀ sin(θ))² + 2gh₀)] / g &nbsp; | &nbsp; R = v₀ cos(θ) T</div><p class="help-foot">المحوران بمقياس متساوٍ؛ أحجام الرسوم توضيحية. قراءات النهاية قبل ملامسة الأرض.</p></dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+<script>
+'use strict';
+/* 03 · Pure physics: every view and both experiments share these functions. */
+const Physics = Object.freeze({
+ derive(p) {
+  const radians=p.angle*Math.PI/180;
+  const vx=p.angle===90?0:p.speed*Math.cos(radians);
+  const vy0=p.angle===0?0:p.speed*Math.sin(radians);
+  const peak=vy0/p.gravity;
+  const duration=(vy0+Math.sqrt(vy0*vy0+2*p.gravity*p.height))/p.gravity;
+  return {vx,vy0,peak,duration,range:vx*duration,maxHeight:p.height+vy0*vy0/(2*p.gravity)};
+ },
+ at(p,time,d=Physics.derive(p)) {
+  const t=Math.max(0,Math.min(d.duration,time));
+  const vy=d.vy0-p.gravity*t;
+  return {t,x:d.vx*t,y:Math.max(0,p.height+d.vy0*t-.5*p.gravity*t*t),vx:d.vx,vy:Math.abs(vy)<1e-11?0:vy,v:Math.hypot(d.vx,vy),ax:0,ay:-p.gravity,fx:0,fy:-p.mass*p.gravity};
+ }
+});
+const $=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const fmt=(v,d=2)=>{if(Math.abs(v)<.5*10**-d)v=0;return v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d,useGrouping:false});};
+const compact=v=>Math.abs(v)>1e-11&&Math.abs(v)<.01?Number(v.toPrecision(2)).toString():Math.abs(v)>=1000?fmt(v,0):Math.abs(v)>=100?fmt(v,1):fmt(v,2);
+const icon=n=>`<svg aria-hidden="true"><use href="#i-${n}"/></svg>`;
+
+/* 04 · Original vector assets. Add models here without changing the physics engine.
+   All assets are locally authored; nothing is fetched or embedded from references. */
+const metalDefs=`<defs><linearGradient id="metal" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f1f4f6"/><stop offset=".42" stop-color="#c4cdd5"/><stop offset="1" stop-color="#7e8e9c"/></linearGradient><linearGradient id="tube" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8e9eac"/><stop offset=".45" stop-color="#5b6e7c"/><stop offset="1" stop-color="#364958"/></linearGradient><linearGradient id="olive" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a9b4a0"/><stop offset="1" stop-color="#6e7d68"/></linearGradient><linearGradient id="yellow" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#edc36d"/><stop offset="1" stop-color="#b88b36"/></linearGradient><linearGradient id="window" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#bbd4de"/><stop offset="1" stop-color="#526f7e"/></linearGradient></defs>`;
+const rivets=(xs,y,color='#c3cbd0')=>xs.map(x=>`<circle cx="${x}" cy="${y}" r="1.6" fill="${color}"/>`).join('');
+const projectiles=[
+ {id:'compact',name:'الصاروخ القصير',description:'جسم قصير، مقدمة مستديرة وزعانف صغيرة.',colors:{body:'#b3bfc9',accent:'#4b7d9c'},svg:`<g stroke="#546676" stroke-width="1.5" stroke-linejoin="round"><path d="M-34-8L-45-21-25-12v24l-20 9 11-13" fill="#6c8c9e"/><path d="M-38-9h49Q31-9 38 0Q31 9 11 9h-49z" fill="url(#metal)"/><path d="M11-9Q28-8 38 0Q28 8 11 9z" fill="#aebbc7"/><path d="M-25-9v18M9-9v18" fill="none"/><path d="M-20-5H4" stroke="#edf3f7" stroke-width="2"/><path d="M-38-6h-5V6h5" fill="#586b79"/><rect x="-8" y="-9" width="5" height="18" fill="#668ba5" stroke="none"/>${rivets([-20,3],3)}</g>`,launcher:`<g stroke="#405768" stroke-width="1.6" stroke-linejoin="round"><path d="M-86-12h83v24h-83z" fill="url(#tube)"/><path d="M-86-12v24h10v-24M-12-14H0v28h-12z" fill="#a8b7c2"/><path d="M-71-8h49" stroke="#c1d0d9"/><path d="M-55 12v13h19V12" fill="#3f5362"/>${rivets([-66,-29],6)}</g>`},
+ {id:'long',name:'الصاروخ الطويل',description:'جسم انسيابي طويل وزعانف ذيل ممتدة.',colors:{body:'#becac3',accent:'#698b7b'},svg:`<g stroke="#536c64" stroke-width="1.4" stroke-linejoin="round"><path d="M-41-6l-16-18 25 15v18l-25 15 16-18" fill="#7e9a89"/><path d="M-46-7H20L48 0 20 7h-66z" fill="url(#metal)"/><path d="M20-7L48 0 20 7z" fill="#81998b"/><path d="M-28-7v14M8-7v14"/><rect x="-18" y="-7" width="9" height="14" fill="#809a8e" stroke="none"/><path d="M-5-4h21" stroke="#f3f6f4"/><path d="M-46-4h-6v8h6" fill="#536d63"/>${rivets([-24,3],3)}</g>`,launcher:`<g stroke="#4c6159" stroke-width="1.6" stroke-linejoin="round"><path d="M-99-10H0v20h-99z" fill="url(#olive)"/><path d="M-90-12h9v24h-9M-34-12h9v24h-9M-8-13h8v26h-8" fill="#657c6e"/><path d="M-78-6h41" stroke="#d2ddca"/><path d="M-62 10l-5 17h27V10" fill="#536b5e"/>${rivets([-74,-43],6)}</g>`},
+ {id:'rounded',name:'المقذوف المستدير',description:'أسطوانة مدمجة ذات مقدمة عريضة وحلقات تقنية.',colors:{body:'#bbc4cd',accent:'#ad8866'},svg:`<g stroke="#626c7b" stroke-width="1.5"><path d="M-26-14H7Q32-14 34 0Q32 14 7 14h-33z" fill="url(#metal)"/><path d="M-26-14h8v28h-8z" fill="#aa896c"/><path d="M9-14v28" fill="none"/><path d="M-13-9H5" stroke="#f3f5f7" stroke-width="2"/><path d="M-27-10h-5v20h5" fill="#697985"/>${rivets([-10,2],6)}</g>`,launcher:`<g stroke="#566373" stroke-width="1.6" stroke-linejoin="round"><path d="M-73-19H0v38h-73z" fill="url(#tube)"/><path d="M-76-21h12v42h-12M-12-22H0v44h-12z" fill="#aab6c1"/><path d="M-60-13h41" stroke="#c7d3db" stroke-width="2"/><path d="M-52 19v13h26V19" fill="#536371"/><rect x="-44" y="-5" width="17" height="10" rx="2" fill="#aa896c"/>${rivets([-57,-20],12)}</g>`}
+];
+function trackArt(){return `<g stroke="#47514e" stroke-width="2"><rect x="20" y="83" width="153" height="34" rx="17" fill="#4b5552"/><rect x="27" y="89" width="139" height="22" rx="11" fill="#313e3c"/>${[40,66,92,118,144].map(x=>`<circle cx="${x}" cy="100" r="11" fill="#7c877a"/><circle cx="${x}" cy="100" r="4" fill="#46544d"/>`).join('')}<path d="M33 84h128M33 116h128" stroke="#9ba393" stroke-dasharray="7 5"/></g>`;}
+const groundObjects=[
+ {id:'none',name:'بدون',description:'أرض مستوية، دون عناصر إضافية.',svg:`<path d="M25 105h150" stroke="#aebbad" stroke-width="3"/><path d="M30 109l-7 8m29-8l-7 8m29-8l-7 8m29-8l-7 8m29-8l-7 8m29-8l-7 8m29-8l-7 8" stroke="#d3dbd0" stroke-width="2"/>`},
+ {id:'armored',name:'مركبة مدرعة',description:'عنصر بصري قابل للسحب أفقيًا.',svg:`<ellipse cx="102" cy="120" rx="86" ry="6" fill="#24324715"/>${trackArt()}<g stroke="#596653" stroke-width="1.8" stroke-linejoin="round"><path d="M16 83l22-29h102l41 24-9 14H27z" fill="url(#olive)"/><path d="M43 55l12-27h64l24 27z" fill="#8e9f86"/><path d="M58 28l58-5 5 5" fill="#b6bfaa"/><path d="M77 30h28v16H77z" fill="url(#window)"/><path d="M81 32h20v5" stroke="#c8dde0"/><path d="M47 58h86l27 18H34z" fill="#a5b19b"/><path d="M46 63h29v20H46zm38 0h29v20H84z" fill="#87967c"/><path d="M129 65l26 15h-26z" fill="#77886e"/><path d="M31 89h136" stroke="#c8cdbb"/><rect x="25" y="76" width="10" height="8" rx="2" fill="#d6d7b0"/><rect x="161" y="79" width="8" height="7" rx="1" fill="#909c7a"/><path d="M119 30V12" stroke-width="2"/><path d="M62 28v-7h32v5" fill="#78876e"/>${rivets([49,72,88,110,132],66,'#d4d9c8')}</g>`},
+ {id:'bulldozer',name:'جرافة عسكرية',description:'جرافة مجنزرة بكابينة محمية وشفرة أمامية.',svg:`<ellipse cx="106" cy="121" rx="91" ry="6" fill="#24324715"/>${trackArt()}<g stroke="#7a6a48" stroke-width="1.8" stroke-linejoin="round"><path d="M35 86V60h99l23 26z" fill="url(#yellow)"/><path d="M43 60V24h54l9 36z" fill="#c79e4b"/><path d="M48 30h20v27H48zm25 0h20l5 27H73z" fill="url(#window)"/><path d="M51 33v17m25-17 13 16" stroke="#d0e2e6" stroke-width="2"/><path d="M39 23h61v7H39z" fill="#8e7c53"/><path d="M106 62h25l9 18h-34z" fill="#d2a649"/><path d="M111 66v10m7-10v10m7-10v10" stroke="#7d714f"/><path d="M129 60V40h6v20" fill="#687274"/><path d="M148 90l31-21 6 10-28 26z" fill="#b8bcb2"/><path d="M114 85l61 5" stroke="#5a6667" stroke-width="8"/><path d="M139 85l38 5" stroke="#cad0cb" stroke-width="4"/><path d="M176 61l17-4q-5 30 2 53l-22 5q-6-28 3-54z" fill="url(#metal)"/><path d="M173 111l22-4 2 6-25 5z" fill="#768487"/><path d="M42 84h91" stroke="#f4d78c"/>${rivets([41,75,106,129],81,'#f6d68e')}</g>`}
+];
+function svgAsset(content,viewBox='-60 -35 120 70'){return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox}" aria-hidden="true">${metalDefs}${content}</svg>`;}
+function platformArt(){return `<g stroke="#637786" stroke-width="1.6" stroke-linejoin="round"><ellipse cx="-38" cy="50" rx="47" ry="5" fill="#24324713" stroke="none"/><path d="M-41 13l-19 32h9l15-24 15 24h10l-20-32" fill="#a5b3bf"/><rect x="-69" y="43" width="69" height="7" rx="3" fill="#7b8d9a"/><circle cx="-37" cy="14" r="12" fill="#91a4b3"/><circle cx="-37" cy="14" r="5" fill="#d9e1e7"/></g>`;}
+
+/* 05 · Simulation state and parameter controls */
+const DEFAULTS=Object.freeze({speed:30,angle:45,height:0,gravity:9.81,mass:2});
+const parameterDefs=[{key:'speed',label:'السرعة الابتدائية',symbol:'v₀',unit:'m/s',min:1,max:100,step:.1},{key:'angle',label:'زاوية الإطلاق',symbol:'θ',unit:'°',min:0,max:90,step:.1},{key:'height',label:'ارتفاع الإطلاق',symbol:'h₀',unit:'m',min:0,max:30,step:.1},{key:'gravity',label:'تسارع الجاذبية',symbol:'g',unit:'m/s²',min:1,max:20,step:.01},{key:'mass',label:'كتلة المقذوف',symbol:'m',unit:'kg',min:.1,max:100,step:.1}];
+const state={p:{...DEFAULTS},t:0,playing:false,speed:1,projectile:'compact',ground:'none',grid:true,vectors:{vx:true,vy:true,v:false,g:true,f:false},saved:null,drawer:null,groundPosition:1,impact:null,lastFrame:null};
+let derived=Physics.derive(state.p),viewport={w:900,h:600,scale:1,ox:110,oy:480},graphGeometry=[],toastTimer;
+function toast(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,2800);}
+function renderParameterControls(){
+ const shortLabels={speed:'السرعة',angle:'الزاوية',height:'الارتفاع',gravity:'الجاذبية',mass:'الكتلة'};
+ $('parameters').innerHTML=parameterDefs.map(d=>`<div class="parameter" data-parameter="${d.key}"><div class="param-top"><label class="param-label" for="number-${d.key}">${shortLabels[d.key]}<bdi>${d.symbol}</bdi></label><div class="number-box"><input id="number-${d.key}" type="number" min="${d.min}" max="${d.max}" step="${d.step}" value="${state.p[d.key]}" inputmode="decimal" aria-label="${d.label}"><span>${d.unit}</span></div></div><input id="slider-${d.key}" type="range" min="${d.min}" max="${d.max}" step="${d.step}" value="${state.p[d.key]}" aria-label="شريط ${d.label}"><div class="range-ends"><span>${d.min}</span><span>${d.max}</span></div></div>`).join('');
+ parameterDefs.forEach(d=>{
+  const num=$('number-'+d.key),slider=$('slider-'+d.key);
+  slider.addEventListener('input',()=>changeParameter(d.key,Number(slider.value)));
+  num.addEventListener('input',()=>{if(num.value!==''&&Number.isFinite(num.valueAsNumber)&&num.valueAsNumber>=d.min&&num.valueAsNumber<=d.max)changeParameter(d.key,num.valueAsNumber,false);});
+  const commit=()=>{const raw=num.valueAsNumber;changeParameter(d.key,Number.isFinite(raw)?clamp(raw,d.min,d.max):state.p[d.key]);};
+  num.addEventListener('change',commit);num.addEventListener('blur',commit);num.addEventListener('keydown',e=>{if(e.key==='Enter'){commit();num.blur();}});
+ });
+}
+function syncParameters(){parameterDefs.forEach(d=>{$('number-'+d.key).value=state.p[d.key];$('slider-'+d.key).value=state.p[d.key];});}
+function changeParameter(key,value,updateNumber=true){
+ const def=parameterDefs.find(d=>d.key===key);value=clamp(value,def.min,def.max);
+ if(state.p[key]===value){if(updateNumber)$('number-'+key).value=value;return;}
+ pause();state.p[key]=value;derived=Physics.derive(state.p);state.t=clamp(state.t,0,derived.duration);clearImpact();
+ if(updateNumber)$('number-'+key).value=value;$('slider-'+key).value=value;
+ refreshAll();
+}
+function updateModelPreview(){const a=projectiles.find(x=>x.id===state.projectile);$('launcherPreview').innerHTML=svgAsset(`${platformArt()}<g transform="rotate(-25 -37 14)">${a.launcher}</g>`,'-110 -75 135 135');$('modelName').textContent=a.name;$('groundName').textContent=groundObjects.find(x=>x.id===state.ground).name;}
+function updateVectorButtons(){document.querySelectorAll('[data-vector]').forEach(b=>b.setAttribute('aria-pressed',state.vectors[b.dataset.vector]));}
+
+/* 06 · SVG scene, equal spatial scale, adaptive scientific grid */
+function niceStep(desired){const base=10**Math.floor(Math.log10(Math.max(desired,1e-9))),n=desired/base;return(n<=1?1:n<=2?2:n<=5?5:10)*base;}
+function fitViewport(){const rect=$('canvasWrap').getBoundingClientRect(),w=Math.max(250,rect.width),h=Math.max(180,rect.height);let r=derived.range,H=derived.maxHeight;if(state.saved){const a=Physics.derive(state.saved);r=Math.max(r,a.range);H=Math.max(H,a.maxHeight);}const left=w<500?78:108,right=w<500?90:148,top=h<300?62:100,bottom=h<300?65:105;const usableW=Math.max(50,w-left-right),usableH=Math.max(40,h-top-bottom),degenerate=r<1e-12&&H<1e-12;const scale=Math.min(usableW/(degenerate?8:Math.max(r,H*.2,1e-8)),usableH/(degenerate?4:Math.max(H,r*.02,1e-8)));viewport={w,h,scale,ox:left,oy:h-bottom};}
+function xy(x,y){return [viewport.ox+x*viewport.scale,viewport.oy-y*viewport.scale];}
+function pathFor(p,d,end=d.duration,steps=100){let path='';for(let i=0;i<=steps;i++){const s=Physics.at(p,end*i/steps,d),[x,y]=xy(s.x,s.y);path+=(i?'L':'M')+x.toFixed(2)+' '+y.toFixed(2);}return path;}
+function svgText(x,y,text,color='#66758a',size=13,anchor='middle',extra=''){return `<text x="${x}" y="${y}" fill="${color}" font-size="${size}" text-anchor="${anchor}" ${extra}>${text}</text>`;}
+// Ground position is a scene coordinate only; it never enters the physics model.
+function groundPlacement(){const size=viewport.w<600?115:155,minX=25,maxX=Math.max(minX,viewport.w-size-15);return {size,minX,maxX,x:minX+state.groundPosition*(maxX-minX),y:viewport.oy-size*.6};}
+function updateGroundPosition(position){
+ state.groundPosition=clamp(position,0,1);const object=$('groundObject');if(!object)return;
+ const p=groundPlacement();object.setAttribute('transform',`translate(${p.x} ${p.y}) scale(${p.size/200})`);object.setAttribute('aria-valuenow',Math.round(state.groundPosition*100));
+}
+function renderStaticScene(){
+ fitViewport();const {w,h,ox,oy,scale}=viewport;const s=$('scene');s.setAttribute('viewBox',`0 0 ${w} ${h}`);
+ const step=niceStep(65/scale),limitX=(w-30-ox)/scale,limitY=(oy-40)/scale;let grid='';
+ for(let x=0;x<=limitX+1e-8;x+=step){const px=ox+x*scale;grid+=state.grid?`<line x1="${px}" y1="42" x2="${px}" y2="${oy}" stroke="#e9eef3"/>`:'';grid+=svgText(px,oy+22,compactTick(x),'#7c8999',12);}
+ for(let y=step;y<=limitY+1e-8;y+=step){const py=oy-y*scale;grid+=state.grid?`<line x1="${ox}" y1="${py}" x2="${w-25}" y2="${py}" stroke="#e9eef3"/>`:'';grid+=svgText(ox-13,py+4,compactTick(y),'#7c8999',12,'end');}
+ const model=projectiles.find(x=>x.id===state.projectile),ground=groundObjects.find(x=>x.id===state.ground);const [lx,ly]=xy(0,state.p.height),[px,py]=xy(derived.vx*derived.peak,derived.maxHeight),[ix,iy]=xy(derived.range,0);
+ let saved='';if(state.saved){const d=Physics.derive(state.saved);saved=`<path d="${pathFor(state.saved,d)}" stroke="#9460b6" stroke-width="2.5" stroke-dasharray="7 6" fill="none" opacity=".85"/>`;}
+ const tubeScale=w<600?.65:.88,angleRad=state.p.angle*Math.PI/180;
+ // Launch coordinates refer to the loaded projectile centre; its path stays analytic.
+ const muzzleOffset=22*tubeScale/.88,muzzleX=lx+muzzleOffset*Math.cos(angleRad),muzzleY=ly-muzzleOffset*Math.sin(angleRad);
+ const launcher=`<g opacity=".95"><path d="M${lx-35} ${ly+12}V${oy}" stroke="#9eafbd" stroke-width="5"/><g transform="translate(${lx-8} ${ly-50*tubeScale}) scale(${tubeScale})">${platformArt()}</g><g id="launchTube" transform="translate(${muzzleX} ${muzzleY}) rotate(${-state.p.angle}) scale(${tubeScale})">${model.launcher}</g></g>`;
+ let object='';if(ground.id!=='none'){const p=groundPlacement();object=`<g id="groundObject" class="ground-object" transform="translate(${p.x} ${p.y}) scale(${p.size/200})" tabindex="0" role="slider" aria-label="موضع ${ground.name}؛ اسحب أفقيًا" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(state.groundPosition*100)}"><rect class="object-hit" x="0" y="-15" width="200" height="145" rx="8" fill="transparent" pointer-events="all"/>${ground.svg}<path id="groundMarker" d="M94-2h14l-7 10z" transform="translate(101 8) scale(2) translate(-101 -8)" fill="#FF2020" stroke="none"/></g>`;}
+ const peakLabel=derived.maxHeight>1e-12?`<line x1="${px}" y1="${py+7}" x2="${px}" y2="${oy}" stroke="#cad8e8" stroke-dasharray="3 5"/><circle cx="${px}" cy="${py}" r="5" fill="white" stroke="#3478c8" stroke-width="2"/>${svgText(clamp(px,115,w-115),py-42,`H = ${compact(derived.maxHeight)} m · القمة`,'#3c70a7',13)}`:'';
+ s.innerHTML=`${metalDefs}<defs><pattern id="earth" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M0 15L15 0" stroke="#dce3dd" stroke-width="1"/></pattern><clipPath id="sceneClip"><rect width="${w}" height="${h}"/></clipPath></defs><g clip-path="url(#sceneClip)"><rect width="${w}" height="${h}" fill="#fff"/>${grid}<rect x="25" y="${oy}" width="${w-50}" height="15" fill="#edf1ec"/><rect x="25" y="${oy}" width="${w-50}" height="15" fill="url(#earth)"/><path d="M${ox} 43V${oy}H${w-25}" fill="none" stroke="#acb8c6" stroke-width="1.3"/>${svgText(ox-13,52,'y (m)','#66758a',13,'end')}${svgText(w-28,oy+43,'x (m)','#66758a',13,'end')}${saved}<path id="predictedPath" d="${pathFor(state.p,derived)}" fill="none" stroke="#3478c8" stroke-width="2.4" stroke-dasharray="6 6"/><path id="travelPath" fill="none" stroke="#3478c8" stroke-width="2.5" opacity=".45"/>${peakLabel}${launcher}${object}<circle cx="${lx}" cy="${ly}" r="4" fill="#3478c8" stroke="white" stroke-width="2"/><circle cx="${ix}" cy="${iy}" r="5" fill="white" stroke="#3478c8" stroke-width="2"/>${svgText(clamp(ix,ox+38,w-105),iy+44,`R = ${compact(derived.range)} m`,'#3c70a7',13)}<g id="projectileMotion"><g id="projectileArt">${model.svg}</g></g><g id="vectorsLayer"></g><g id="impactLayer" pointer-events="none" aria-hidden="true"></g></g>`;
+ $('savedLegend').hidden=!state.saved;$('currentLegend').textContent=state.saved?'التجربة B':'المسار المتوقع';renderDynamicScene();
+}
+function compactTick(v){return Math.abs(v)<1e-9?'0':Number(v.toPrecision(5)).toString();}
+let vectorLabelBoxes=[];
+function vectorLabel(x,y,text,color,anchor='start'){
+ const width=text.length*6.6+6,height=18;
+ let left=anchor==='end'?x-width:anchor==='middle'?x-width/2:x;left=clamp(left,8,Math.max(8,viewport.w-width-8));let top=clamp(y-13,42,viewport.h-height-6);
+ const collides=(l,t)=>vectorLabelBoxes.some(b=>l<b.l+b.w+5&&l+width+5>b.l&&t<b.t+b.h+5&&t+height+5>b.t);
+ for(const offset of [0,24,-24,48,-48,72,-72]){const test=clamp(top+offset,42,viewport.h-height-6);if(!collides(left,test)){top=test;break;}}
+ vectorLabelBoxes.push({l:left,t:top,w:width,h:height});return svgText(left,top+13,text,color,12,'start');
+}
+function arrowSvg(x,y,dx,dy,color,label,labelSide=1){
+ const ex=x+dx,ey=y+dy,len=Math.hypot(dx,dy);if(len<.01)return `<circle cx="${x}" cy="${y}" r="4" fill="white" stroke="${color}" stroke-width="2"/>${vectorLabel(x-14,y-10,label,color,'end')}`;
+ const a=Math.atan2(dy,dx),tip=8,wing=4;const x1=ex-tip*Math.cos(a)+wing*Math.sin(a),y1=ey-tip*Math.sin(a)-wing*Math.cos(a),x2=ex-tip*Math.cos(a)-wing*Math.sin(a),y2=ey-tip*Math.sin(a)+wing*Math.cos(a);
+ const horizontal=Math.abs(dx)>Math.abs(dy);const tx=horizontal?ex+11:ex+labelSide*11,ty=horizontal?ey+17:ey+(dy>0?8:-8);
+ return `<path d="M${x} ${y}L${ex} ${ey}" fill="none" stroke="${color}" stroke-width="2.3"/><path d="M${ex} ${ey}L${x1} ${y1}L${x2} ${y2}z" fill="${color}"/>${vectorLabel(tx,ty,label,color,horizontal||labelSide>0?'start':'end')}`;
+}
+function renderDynamicScene(){
+ const q=Physics.at(state.p,state.t,derived),[x,y]=xy(q.x,q.y),angle=Math.hypot(q.vx,q.vy)<1e-8?-state.p.angle:-Math.atan2(q.vy,q.vx)*180/Math.PI;
+ const modelScale=({compact:.47,long:.36,rounded:.55})[state.projectile]*(viewport.w<600?.65/.88:1);
+ $('projectileMotion').setAttribute('transform',`translate(${x} ${y}) rotate(${angle}) scale(${modelScale})`);
+ $('travelPath').setAttribute('d',pathFor(state.p,derived,state.t,Math.max(2,Math.ceil(60*state.t/(derived.duration||1)))));
+ const [peakX,peakY]=xy(derived.vx*derived.peak,derived.maxHeight);vectorLabelBoxes=[{l:clamp(peakX,115,viewport.w-115)-95,t:peakY-56,w:190,h:20}];
+ const vs=65/Math.max(1,Math.hypot(state.p.speed,Math.sqrt(2*state.p.gravity*state.p.height)));let vectors='';
+ if(state.vectors.vx)vectors+=arrowSvg(x,y+5,q.vx*vs,0,'#238c9d',`vₓ ${compact(q.vx)} m/s`);
+ if(state.vectors.vy)vectors+=arrowSvg(x-5,y,0,-q.vy*vs,'#3478c8',`vᵧ ${compact(q.vy)} m/s`,-1);
+ if(state.vectors.v)vectors+=arrowSvg(x,y,q.vx*vs,-q.vy*vs,'#297a65',`v ${compact(q.v)} m/s`);
+ if(state.vectors.g)vectors+=arrowSvg(x+20,y+5,0,32+state.p.gravity*1.2,'#df8137',`g ${compact(state.p.gravity)} m/s²`);
+ if(state.vectors.f)vectors+=arrowSvg(x-26,y+7,0,69,'#9460b6',`Fɢ ${compact(-q.fy)} N`,-1);
+ $('vectorsLayer').innerHTML=vectors;
+}
+function renderReadings(){
+ const q=Physics.at(state.p,state.t,derived);
+ for(const [id,value] of Object.entries({readTime:q.t,readX:q.x,readY:q.y,readVx:q.vx,readVy:q.vy,readV:q.v,readAy:q.ay,readFy:q.fy}))$(id).textContent=compact(value);
+ $('rangeResult').textContent=compact(derived.range);$('heightResult').textContent=compact(derived.maxHeight);$('flightResult').textContent=compact(derived.duration);
+ $('timelineNow').textContent=compact(state.t)+' s';$('timelineEnd').textContent=compact(derived.duration)+' s';$('timeline').max=derived.duration||1;$('timeline').value=state.t;$('timeline').disabled=derived.duration===0;
+ $('timeline').setAttribute('aria-valuetext',`${fmt(state.t)} ثانية من ${fmt(derived.duration)}`);
+ const peak=Math.abs(state.t-derived.peak)<1e-8&&derived.duration>0;
+ $('statusText').textContent=state.playing?'المحاكاة قيد التشغيل':derived.duration===0?'ملامسة فورية للأرض':peak?'عند أعلى نقطة':state.t>=derived.duration?'نهاية التحليق':state.t===0?'جاهز للإطلاق':'إيقاف مؤقت';
+ $('pauseBtn').disabled=!state.playing;$('playBtn').disabled=state.playing||derived.duration===0;
+ $('playBtn').querySelector('span').textContent=state.t>=derived.duration&&derived.duration>0?'إعادة التشغيل':'تشغيل';
+}
+
+/* 07 · Playback: one elapsed simulation time, analytic positions, no Euler drift. */
+function pause(){state.playing=false;state.lastFrame=null;renderReadings();}
+function play(){if(derived.duration===0){toast('ارفع الزاوية أو ارتفاع الإطلاق.');return;}clearImpact();if(state.t>=derived.duration)state.t=0;state.playing=true;state.lastFrame=null;renderReadings();}
+function seek(time){const previous=state.t;pause();clearImpact();const target=clamp(time,0,derived.duration);state.t=Math.abs(target-derived.duration)<=Number.EPSILON*Math.max(1,derived.duration)*16?derived.duration:target;refreshDynamic();}
+function jumpToPeak(){state.vectors.vx=true;state.vectors.vy=true;state.vectors.g=true;updateVectorButtons();seek(derived.peak);}
+function animationFrame(now){if(state.playing){if(state.lastFrame!==null){const next=state.t+(now-state.lastFrame)/1000*state.speed;state.t=Math.min(next,derived.duration);if(state.t>=derived.duration){state.playing=false;}refreshDynamic();}state.lastFrame=now;}requestAnimationFrame(animationFrame);}
+function refreshDynamic(){renderDynamicScene();renderReadings();updateGraphIndicators();}
+function refreshAll(){renderStaticScene();renderReadings();renderDrawer();}
+
+// No neutral test body exists here: ground and vehicles produce no contact effect.
+function clearImpact(){state.impact=null;const layer=$('impactLayer');if(layer)layer.replaceChildren();}
+
+/* 08 · Synchronized position and velocity graphs, touch scrubbing. */
+const graphDefs=[{key:'x',title:'الموقع الأفقي',symbol:'x',unit:'m',color:'#3478c8'},{key:'y',title:'الموقع الرأسي',symbol:'y',unit:'m',color:'#3478c8'},{key:'vx',title:'السرعة الأفقية',symbol:'vₓ',unit:'m/s',color:'#238c9d'},{key:'vy',title:'السرعة الرأسية',symbol:'vᵧ',unit:'m/s',color:'#238c9d'}];
+function buildGraphs(){
+ graphGeometry=[];const grid=$('graphs'),columns=getComputedStyle(grid).gridTemplateColumns.split(' ').length,rows=Math.ceil(4/columns),plotW=Math.max(170,Math.floor(grid.clientWidth/columns-10)),plotH=Math.max(80,Math.floor(grid.clientHeight/rows-28));
+ $('graphs').innerHTML=graphDefs.map((def,index)=>{
+  const T=derived.duration||1,samples=Array.from({length:81},(_,i)=>Physics.at(state.p,derived.duration*i/80,derived)[def.key]);let lo=Math.min(0,...samples),hi=Math.max(0,...samples);if(hi-lo<1e-8)hi=lo+1;const pad=(hi-lo)*.12;lo-=pad;hi+=pad;
+  const geo={lo,hi,T,left:44,right:plotW-16,top:22,bottom:plotH-33,key:def.key,color:def.color};graphGeometry.push(geo);
+  const X=t=>geo.left+(geo.right-geo.left)*t/T,Y=v=>geo.bottom-(v-lo)/(hi-lo)*(geo.bottom-geo.top);let ticks='';
+  for(let j=0;j<3;j++){const t=T*j/2,v=lo+(hi-lo)*j/2;const xx=X(t),yy=Y(v);ticks+=`<line x1="${xx}" y1="${geo.top}" x2="${xx}" y2="${geo.bottom}" stroke="#edf1f5"/><line x1="${geo.left}" y1="${yy}" x2="${geo.right}" y2="${yy}" stroke="#edf1f5"/>${svgText(xx,geo.bottom+16,Number(t.toPrecision(3)),'#66758a',11)}${svgText(geo.left-6,yy+4,Number(v.toPrecision(3)),'#66758a',11,'end')}`;}
+  const path=samples.map((v,i)=>(i?'L':'M')+X(derived.duration*i/80)+' '+Y(v)).join('');
+  return `<article class="graph-card"><h3>${def.title} مع الزمن</h3><svg class="graph-svg" data-graph="${index}" viewBox="0 0 ${plotW} ${plotH}" role="img" aria-label="${def.title} بدلالة الزمن؛ المس لتغيير الزمن" tabindex="0">${ticks}<path d="M${geo.left} ${geo.top}V${geo.bottom}H${geo.right}" fill="none" stroke="#b9c5d1"/><line x1="${geo.left}" x2="${geo.right}" y1="${Y(0)}" y2="${Y(0)}" stroke="#c1cdd8"/>${svgText(geo.left,12,`${def.symbol} (${def.unit})`,'#66758a',11,'start')}${svgText(plotW-5,plotH-2,'t (s)','#66758a',11,'end')}<path d="${path}" fill="none" stroke="${def.color}" stroke-width="2.5"/><line class="graph-cursor" y1="${geo.top}" y2="${geo.bottom}" stroke="${def.color}" stroke-dasharray="3 3"/><circle class="graph-dot" r="4" fill="${def.color}" stroke="white" stroke-width="1.5"/></svg></article>`;
+ }).join('');
+ document.querySelectorAll('.graph-svg').forEach(svg=>{const i=Number(svg.dataset.graph);bindPointerScrub(svg,e=>{const point=localSvgPoint(svg,e),geo=graphGeometry[i];seek((point.x-geo.left)/(geo.right-geo.left)*derived.duration);});svg.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();seek(state.t+(e.key==='ArrowRight'?.05:-.05));}});});
+ updateGraphIndicators();
+}
+function updateGraphIndicators(){if(state.drawer!=='graphs')return;const q=Physics.at(state.p,state.t,derived);document.querySelectorAll('.graph-svg').forEach((svg,i)=>{const g=graphGeometry[i];if(!g)return;const x=g.left+(g.right-g.left)*q.t/g.T,y=g.bottom-(q[g.key]-g.lo)/(g.hi-g.lo)*(g.bottom-g.top);svg.querySelector('.graph-cursor').setAttribute('x1',x);svg.querySelector('.graph-cursor').setAttribute('x2',x);svg.querySelector('.graph-dot').setAttribute('cx',x);svg.querySelector('.graph-dot').setAttribute('cy',y);svg.setAttribute('aria-label',`${graphDefs[i].title}: ${fmt(q[g.key])} ${graphDefs[i].unit} عند ${fmt(q.t)} ثانية`);});}
+
+/* 09 · Comparison: a parameter snapshot, shared analytic engine. */
+function toggleDrawer(kind){state.drawer=state.drawer===kind?null:kind;renderDrawer();requestAnimationFrame(()=>renderStaticScene());}
+function renderDrawer(){
+ const drawer=$('drawer');drawer.hidden=!state.drawer;$('graphsBtn').setAttribute('aria-pressed',state.drawer==='graphs');$('compareBtn').setAttribute('aria-pressed',state.drawer==='comparison');if(!state.drawer)return;
+ const close=`<button class="icon" id="closeDrawer" aria-label="إغلاق التحليل الموسع">${icon('close')}</button>`;
+ if(state.drawer==='graphs'){drawer.innerHTML=`<div class="drawer-heading"><h3>الرسوم البيانية</h3>${close}</div><div class="graphs" id="graphs"></div>`;buildGraphs();}
+ else{drawer.innerHTML=`<div class="drawer-heading"><h3>مقارنة تجربتين</h3><div class="drawer-actions"><button id="saveA" class="primary">${state.saved?'استبدال A بالإعداد الحالي':'حفظ التجربة A'}</button>${state.saved?'<button id="clearComparison">مسح المقارنة</button>':''}${close}</div></div><div id="comparisonContent"></div>`;
+  $('saveA').onclick=()=>{state.saved={...state.p};toast('حُفظت A. غيّر الإعدادات لتكوين التجربة B.');refreshAll();};if(state.saved)$('clearComparison').onclick=()=>{state.saved=null;refreshAll();};renderComparison();
+ }
+ $('closeDrawer').onclick=()=>{state.drawer=null;renderDrawer();requestAnimationFrame(()=>renderStaticScene());};
+}
+function renderComparison(){const container=$('comparisonContent');if(!state.saved){container.innerHTML='<div class="comparison-empty"><p>احفظ A، ثم غيّر الإعدادات للمقارنة.</p></div>';return;}
+ const a=Physics.derive(state.saved),b=derived;const labels=['التجربة','v₀ · m/s','θ · °','h₀ · m','g · m/s²','m · kg','المدى · m','القمة · m','الزمن · s'];
+ const row=(p,d,name,color)=>`<tr><td class="name" style="color:${color}">${name}</td>${[p.speed,p.angle,p.height,p.gravity,p.mass,d.range,d.maxHeight,d.duration].map(v=>`<td><bdi>${compact(v)}</bdi></td>`).join('')}</tr>`;
+ container.innerHTML=`<div style="overflow-x:auto"><table class="comparison-table"><thead><tr>${labels.map(l=>`<th>${l}</th>`).join('')}</tr></thead><tbody>${row(state.saved,a,'A · محفوظة','#9460b6')}${row(state.p,b,'B · الحالية','#3478c8')}</tbody></table></div><p class="comparison-note">فرق المدى <bdi>ΔR = ${compact(b.range-a.range)} m</bdi></p>`;
+}
+
+/* 11 · Libraries and modal keyboard / touch access */
+function openLibrary(kind){pause();const isProjectile=kind==='projectile',items=isProjectile?projectiles:groundObjects,selected=isProjectile?state.projectile:state.ground;$('libraryTitle').textContent=isProjectile?'مكتبة المقذوفات':'عناصر المشهد الأرضي';$('librarySubtitle').textContent=isProjectile?'ثلاثة نماذج تعليمية خيالية، بلا دفع بعد الإطلاق. اختيار الشكل يحافظ على الإعدادات والزمن والمسار.':'اسحب العنصر أفقيًا لتغيير موضعه.';$('libraryGrid').innerHTML=items.map(a=>`<button class="asset-card" data-asset="${a.id}" aria-pressed="${a.id===selected}">${svgAsset(a.svg,isProjectile?'-65 -36 130 72':'0 0 205 135')}<strong>${a.name}</strong>${isProjectile?`<p>${a.description}</p>`:''}<span class="selection">${a.id===selected?'محدد حاليًا':'اختيار النموذج'}</span></button>`).join('');$('libraryGrid').querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>{if(isProjectile)state.projectile=b.dataset.asset;else state.ground=b.dataset.asset;updateModelPreview();renderStaticScene();$('libraryDialog').close();toast(isProjectile?'تم تغيير النموذج مع الحفاظ على الإعدادات.':'تم تحديث عنصر المشهد.');});$('libraryDialog').showModal();}
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
+document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
+
+/* 12 · Pointer interactions, including the vertical-launch branch ambiguity.
+   Nearest screen position selects time. With two equal vertical positions,
+   prefer the branch nearest the current time; the timeline can select either. */
+function localSvgPoint(svg,event){const point=svg.createSVGPoint();point.x=event.clientX;point.y=event.clientY;const matrix=svg.getScreenCTM();return matrix?point.matrixTransform(matrix.inverse()):point;}
+function bindPointerScrub(element,onMove){let active=false;element.addEventListener('pointerdown',e=>{if(e.button!==0)return;active=true;element.setPointerCapture(e.pointerId);onMove(e);e.preventDefault();});element.addEventListener('pointermove',e=>{if(active)onMove(e);});const finish=()=>{active=false;};element.addEventListener('pointerup',finish);element.addEventListener('pointercancel',finish);element.addEventListener('lostpointercapture',finish);}
+function nearestTrajectoryTime(point){
+ if(derived.duration===0)return 0;let bestT=0,bestScore=Infinity,bestIndex=0;const samples=240;
+ const score=t=>{const q=Physics.at(state.p,t,derived),[x,y]=xy(q.x,q.y);return (x-point.x)**2+(y-point.y)**2;};
+ for(let i=0;i<=samples;i++){const t=derived.duration*i/samples,distance=score(t);if(distance<bestScore-1e-7||(Math.abs(distance-bestScore)<1e-7&&Math.abs(t-state.t)<Math.abs(bestT-state.t))){bestT=t;bestScore=distance;bestIndex=i;}}
+ let lo=derived.duration*Math.max(0,bestIndex-1)/samples,hi=derived.duration*Math.min(samples,bestIndex+1)/samples;
+ for(let k=0;k<24;k++){const a=lo+(hi-lo)/3,b=hi-(hi-lo)/3;if(score(a)<score(b))hi=b;else lo=a;}return(lo+hi)/2;
+}
+function bindSceneInteractions(){
+ const scene=$('scene');let gesture=null;
+ scene.addEventListener('pointerdown',e=>{
+  if(e.button!==0||gesture)return;const point=localSvgPoint(scene,e),p=groundPlacement();
+  // Give the object's whole touch area priority over vector strokes drawn above it.
+  const inside=point.x>=p.x&&point.x<=p.x+p.size&&point.y>=p.y-15*p.size/200&&point.y<=p.y+130*p.size/200;
+  const object=e.target.closest('#groundObject')||(inside?$('groundObject'):null);
+  gesture={pointerId:e.pointerId,kind:object?'ground':'time',offset:object?point.x-groundPlacement().x:0};
+  scene.setPointerCapture(e.pointerId);e.preventDefault();
+  if(object){scene.classList.add('dragging');object.focus({preventScroll:true});}else seek(nearestTrajectoryTime(point));
+ });
+ scene.addEventListener('pointermove',e=>{
+  if(!gesture||e.pointerId!==gesture.pointerId)return;const point=localSvgPoint(scene,e);
+  if(gesture.kind==='ground'){const p=groundPlacement();updateGroundPosition((point.x-gesture.offset-p.minX)/(p.maxX-p.minX||1));}else seek(nearestTrajectoryTime(point));
+ });
+ const finish=e=>{if(!gesture||e.pointerId!==gesture.pointerId)return;gesture=null;scene.classList.remove('dragging');if(scene.hasPointerCapture(e.pointerId))scene.releasePointerCapture(e.pointerId);};
+ scene.addEventListener('pointerup',finish);scene.addEventListener('pointercancel',finish);scene.addEventListener('lostpointercapture',finish);
+ scene.addEventListener('keydown',e=>{if(!e.target.closest('#groundObject'))return;let position=state.groundPosition;const step=e.shiftKey?.1:.02;if(e.key==='ArrowLeft')position-=step;else if(e.key==='ArrowRight')position+=step;else if(e.key==='Home')position=0;else if(e.key==='End')position=1;else return;e.preventDefault();e.stopPropagation();updateGroundPosition(position);});
+}
+bindSceneInteractions();
+function bindUI(){
+ $('projectilePickerTop').onclick=()=>openLibrary('projectile');$('projectilePickerScene').onclick=()=>openLibrary('projectile');$('groundPicker').onclick=()=>openLibrary('ground');
+ $('helpBtn').onclick=$('vectorsHelp').onclick=()=>{pause();$('helpDialog').showModal();};
+ $('playBtn').onclick=play;$('pauseBtn').onclick=pause;$('restartBtn').onclick=()=>seek(0);$('peakBtn').onclick=jumpToPeak;$('stepNext').onclick=()=>seek(state.t+.05);$('stepBack').onclick=()=>seek(state.t-.05);
+ $('timeline').addEventListener('input',e=>seek(Number(e.target.value)));
+ document.querySelectorAll('[data-speed]').forEach(b=>b.onclick=()=>{state.speed=Number(b.dataset.speed);document.querySelectorAll('[data-speed]').forEach(x=>x.setAttribute('aria-pressed',x===b));});
+ document.querySelectorAll('[data-vector]').forEach(b=>{b.setAttribute('aria-label',({vx:'متجه السرعة الأفقية',vy:'متجه السرعة الرأسية',v:'متجه السرعة المحصلة',g:'متجه تسارع الجاذبية',f:'متجه قوة الجاذبية'})[b.dataset.vector]);b.onclick=()=>{state.vectors[b.dataset.vector]=!state.vectors[b.dataset.vector];updateVectorButtons();renderDynamicScene();};});
+ $('gridToggle').onclick=()=>{state.grid=!state.grid;$('gridToggle').setAttribute('aria-pressed',state.grid);renderStaticScene();};
+ $('graphsBtn').onclick=$('compactGraphs').onclick=()=>toggleDrawer('graphs');$('compareBtn').onclick=()=>toggleDrawer('comparison');
+ $('defaultsBtn').onclick=()=>{pause();state.p={...DEFAULTS};state.t=0;clearImpact();derived=Physics.derive(state.p);syncParameters();refreshAll();toast('تمت استعادة إعدادات الإطلاق.');};
+ $('analysisToggle').onclick=()=>{const shown=$('workspace').classList.toggle('analysis-open');$('analysisToggle').setAttribute('aria-pressed',shown);};
+ $('fullscreenBtn').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(document.documentElement.requestFullscreen)await document.documentElement.requestFullscreen();else toast('استخدم خيار ملء الشاشة في قائمة المتصفح.');}catch{toast('ملء الشاشة غير متاح هنا؛ جرّبه من قائمة المتصفح.');}};
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&state.playing)pause();});
+ document.addEventListener('keydown',e=>{if(document.querySelector('dialog[open]')||['INPUT','SELECT','TEXTAREA','BUTTON'].includes(e.target.tagName))return;if(e.code==='Space'){e.preventDefault();state.playing?pause():play();}if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();seek(state.t+(e.key==='ArrowRight'?.05:-.05));}});
+}
+
+/* 13 · Initialization. No network, storage, external font or package required. */
+renderParameterControls();updateModelPreview();bindUI();refreshAll();
+const resizeObserver=new ResizeObserver(()=>{renderStaticScene();if(state.drawer==='graphs')buildGraphs();});resizeObserver.observe($('canvasWrap'));
+requestAnimationFrame(animationFrame);
+/* Read-only inspection hooks support scientific regression checks. */
+window.ProjectileLab=Object.freeze({Physics,defaults:DEFAULTS,projectiles:projectiles.map(({id,name})=>({id,name})),groundObjects:groundObjects.map(({id,name})=>({id,name})),snapshot:()=>JSON.parse(JSON.stringify({parameters:state.p,time:state.t,playing:state.playing,derived,viewport,projectile:state.projectile,ground:state.ground,saved:state.saved,groundPosition:state.groundPosition}))});
+</script>
+</body>
+</html>
