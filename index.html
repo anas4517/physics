@@ -180,7 +180,7 @@ function renderStaticScene(){
  let object='';if(ground.id!=='none'){const p=groundPlacement();object=`<g id="groundObject" class="ground-object" transform="translate(${p.x} ${p.y}) scale(${p.size/200})" tabindex="0" role="slider" aria-label="موضع ${ground.name}؛ اسحب أفقيًا" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(state.groundPosition*100)}"><rect class="object-hit" x="0" y="-15" width="200" height="145" rx="8" fill="transparent" pointer-events="all"/>${ground.svg}<path id="groundMarker" d="M94-2h14l-7 10z" transform="translate(101 8) scale(2) translate(-101 -8)" fill="#FF2020" stroke="none"/></g>`;}
  const peakLabel=derived.maxHeight>1e-12?`<line x1="${px}" y1="${py+7}" x2="${px}" y2="${oy}" stroke="#cad8e8" stroke-dasharray="3 5"/><circle cx="${px}" cy="${py}" r="5" fill="white" stroke="#3478c8" stroke-width="2"/>${svgText(clamp(px,115,w-115),py-42,`H = ${compact(derived.maxHeight)} m · القمة`,'#3c70a7',13)}`:'';
  s.innerHTML=`${metalDefs}<defs><pattern id="earth" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M0 15L15 0" stroke="#dce3dd" stroke-width="1"/></pattern><clipPath id="sceneClip"><rect width="${w}" height="${h}"/></clipPath></defs><g clip-path="url(#sceneClip)"><rect width="${w}" height="${h}" fill="#fff"/>${grid}<rect x="25" y="${oy}" width="${w-50}" height="15" fill="#edf1ec"/><rect x="25" y="${oy}" width="${w-50}" height="15" fill="url(#earth)"/><path d="M${ox} 43V${oy}H${w-25}" fill="none" stroke="#acb8c6" stroke-width="1.3"/>${svgText(ox-13,52,'y (m)','#66758a',13,'end')}${svgText(w-28,oy+43,'x (m)','#66758a',13,'end')}${saved}<path id="predictedPath" d="${pathFor(state.p,derived)}" fill="none" stroke="#3478c8" stroke-width="2.4" stroke-dasharray="6 6"/><path id="travelPath" fill="none" stroke="#3478c8" stroke-width="2.5" opacity=".45"/>${peakLabel}${launcher}${object}<circle cx="${lx}" cy="${ly}" r="4" fill="#3478c8" stroke="white" stroke-width="2"/><circle cx="${ix}" cy="${iy}" r="5" fill="white" stroke="#3478c8" stroke-width="2"/>${svgText(clamp(ix,ox+38,w-105),iy+44,`R = ${compact(derived.range)} m`,'#3c70a7',13)}<g id="projectileMotion"><g id="projectileArt">${model.svg}</g></g><g id="vectorsLayer"></g><g id="impactLayer" pointer-events="none" aria-hidden="true"></g></g>`;
- $('savedLegend').hidden=!state.saved;$('currentLegend').textContent=state.saved?'التجربة B':'المسار المتوقع';renderDynamicScene();
+ $('savedLegend').hidden=!state.saved;$('currentLegend').textContent=state.saved?'التجربة B':'المسار المتوقع';renderDynamicScene();renderGroundScorch();
 }
 function compactTick(v){return Math.abs(v)<1e-9?'0':Number(v.toPrecision(5)).toString();}
 let vectorLabelBoxes=[];
@@ -228,12 +228,58 @@ function pause(){state.playing=false;state.lastFrame=null;renderReadings();}
 function play(){if(derived.duration===0){toast('ارفع الزاوية أو ارتفاع الإطلاق.');return;}clearImpact();if(state.t>=derived.duration)state.t=0;state.playing=true;state.lastFrame=null;renderReadings();}
 function seek(time){const previous=state.t;pause();clearImpact();const target=clamp(time,0,derived.duration);state.t=Math.abs(target-derived.duration)<=Number.EPSILON*Math.max(1,derived.duration)*16?derived.duration:target;refreshDynamic();}
 function jumpToPeak(){state.vectors.vx=true;state.vectors.vy=true;state.vectors.g=true;updateVectorButtons();seek(derived.peak);}
-function animationFrame(now){if(state.playing){if(state.lastFrame!==null){const next=state.t+(now-state.lastFrame)/1000*state.speed;state.t=Math.min(next,derived.duration);if(state.t>=derived.duration){state.playing=false;}refreshDynamic();}state.lastFrame=now;}requestAnimationFrame(animationFrame);}
+function animationFrame(now){let landed=false;if(state.playing){if(state.lastFrame!==null){const previous=state.t,next=state.t+(now-state.lastFrame)/1000*state.speed;state.t=Math.min(next,derived.duration);if(state.t>=derived.duration){state.playing=false;landed=true;}refreshDynamic();checkGroundContact(previous,state.t);}state.lastFrame=now;}if(landed)state.impact={startedAt:now};if(state.impact)renderNoseFlash(now);requestAnimationFrame(animationFrame);}
 function refreshDynamic(){renderDynamicScene();renderReadings();updateGraphIndicators();}
 function refreshAll(){renderStaticScene();renderReadings();renderDrawer();}
 
-// No neutral test body exists here: ground and vehicles produce no contact effect.
-function clearImpact(){state.impact=null;const layer=$('impactLayer');if(layer)layer.replaceChildren();}
+// Feedback never changes physics or the original object artwork.
+let groundScorch=null;
+function clearImpact(){state.impact=null;const layer=$('impactLayer');if(layer)layer.replaceChildren();groundScorch=null;document.querySelectorAll('.ground-scorch').forEach(e=>e.remove());}
+
+// Only animation completion starts this 600 ms effect; seeking never starts it.
+function renderNoseFlash(now){
+ const effect=state.impact,layer=$('impactLayer');if(!effect||!layer)return;
+ const u=Math.max(0,(now-effect.startedAt)/600);if(u>=1){state.impact=null;layer.replaceChildren();return;}
+ const nose=({compact:38,long:48,rounded:34})[state.projectile];
+ const point=$('scene').createSVGPoint();point.x=nose;point.y=0;
+ const tip=point.matrixTransform($('projectileMotion').transform.baseVal.consolidate().matrix);
+ const fade=(1-u)*(1-u),expand=1-Math.pow(1-Math.min(1,u/.22),3),particles=Array.from({length:12},(_,i)=>{
+  const a=i*Math.PI/6,r=9+54*(1-(1-u)*(1-u));return `<circle cx="${Math.cos(a)*r}" cy="${Math.sin(a)*r}" r="${(2.2+(i%3)*.5)*(1-u)+.4}" fill="${i%2?'#FFD23F':'#FF8A22'}" opacity="${fade}"/>`;
+ }).join('');
+ layer.innerHTML=`<g class="nose-flash" transform="translate(${tip.x} ${tip.y})"><circle r="${10+32*expand}" fill="#FFB52E" opacity="${.22*fade}"/><circle r="${6+30*expand}" fill="#FF8620" opacity="${.78*fade}"/><circle r="${3+15*expand}" fill="#FFE36A" opacity="${.98*fade}"/><circle r="${9+31*expand}" fill="none" stroke="#FFD34A" stroke-width="2" opacity="${.55*fade}"/>${particles}</g>`;
+}
+
+// Contact is checked against painted SVG geometry, not the draggable hit area.
+function groundSurfaces(body){return [...body.querySelectorAll('path,rect,circle,ellipse,polygon')].filter(el=>{
+ if(el.id==='groundMarker'||el.classList.contains('object-hit')||el.closest('.ground-scorch,defs,clipPath'))return false;
+ const style=getComputedStyle(el),alpha=style.fill.match(/rgba\([^,]+,[^,]+,[^,]+,\s*([.\d]+)\)/);
+ return typeof el.isPointInFill==='function'&&style.fill!=='none'&&style.fill!=='transparent'&&Number(style.opacity)>.5&&(!alpha||Number(alpha[1])>.5);
+});}
+function checkGroundContact(from,to){
+ const body=$('groundObject');if(!body||state.ground==='none'||groundScorch)return;
+ const shapes=groundSurfaces(body).map(el=>({el,inverse:el.getCTM().inverse().multiply($('scene').getCTM())}));if(!shapes.length)return;
+ const bodyInverse=body.getCTM().inverse().multiply($('scene').getCTM());
+ const nose=({compact:38,long:48,rounded:34})[state.projectile]*({compact:.47,long:.36,rounded:.55})[state.projectile]*(viewport.w<600?.65/.88:1);
+ const tail=({compact:-34,long:-46,rounded:-26})[state.projectile]*({compact:.47,long:.36,rounded:.55})[state.projectile]*(viewport.w<600?.65/.88:1);
+ const pointsAt=t=>{const q=Physics.at(state.p,t,derived),angle=q.v<1e-8?state.p.angle*Math.PI/180:Math.atan2(q.vy,q.vx),base=xy(q.x,q.y);return Array.from({length:9},(_,i)=>{const p=$('scene').createSVGPoint(),offset=tail+(nose-tail)*i/8;p.x=base[0]+offset*Math.cos(angle);p.y=base[1]-offset*Math.sin(angle);return p;});};
+ const steps=Math.min(512,Math.max(1,Math.ceil((to-from)*Math.hypot(state.p.speed,Math.sqrt(2*state.p.gravity*state.p.height))*viewport.scale*2)));
+ for(let i=0;i<=steps;i++){
+  for(const p of pointsAt(from+(to-from)*i/steps)){const local=p.matrixTransform(bodyInverse);
+  if(local.x<0||local.x>200||local.y<0||local.y>120)continue;
+  if(shapes.some(s=>s.el.isPointInFill(p.matrixTransform(s.inverse)))){groundScorch={id:state.ground,x:local.x,y:local.y};renderGroundScorch();return;}
+  }
+ }
+}
+function renderGroundScorch(){
+ const body=$('groundObject');if(!body||!groundScorch||groundScorch.id!==state.ground)return;
+ body.querySelector('.ground-scorch')?.remove();
+ const ns='http://www.w3.org/2000/svg',mark=document.createElementNS(ns,'g'),clip=document.createElementNS(ns,'clipPath');
+ mark.setAttribute('class','ground-scorch');mark.setAttribute('pointer-events','none');clip.setAttribute('id','ground-scorch-clip');clip.setAttribute('clipPathUnits','userSpaceOnUse');
+ const inverse=body.getCTM().inverse();for(const surface of groundSurfaces(body)){const shape=surface.cloneNode(true),m=inverse.multiply(surface.getCTM());shape.removeAttribute('id');shape.setAttribute('transform',`matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f})`);clip.append(shape);}
+ const spot=document.createElementNS(ns,'g');spot.setAttribute('clip-path','url(#ground-scorch-clip)');
+ const {x,y}=groundScorch;spot.innerHTML=`<g transform="translate(${x} ${y})"><path d="M-23-3L-18-13-8-17 0-22 9-16 19-13 17-4 23 4 16 10 12 18 2 15-8 20-15 12-22 8z" fill="#4B3E32" opacity=".6"/><ellipse rx="16" ry="13" fill="#272827" opacity=".8"/><path d="M-11-8L-2-12 8-7 10 4 1 10-10 6z" fill="#171B1D" opacity=".8"/><circle cx="-18" cy="-10" r="2.5" fill="#33302C"/><circle cx="16" cy="9" r="2" fill="#33302C"/></g>`;
+ mark.append(clip,spot);body.append(mark);
+}
 
 /* 08 · Synchronized position and velocity graphs, touch scrubbing. */
 const graphDefs=[{key:'x',title:'الموقع الأفقي',symbol:'x',unit:'m',color:'#3478c8'},{key:'y',title:'الموقع الرأسي',symbol:'y',unit:'m',color:'#3478c8'},{key:'vx',title:'السرعة الأفقية',symbol:'vₓ',unit:'m/s',color:'#238c9d'},{key:'vy',title:'السرعة الرأسية',symbol:'vᵧ',unit:'m/s',color:'#238c9d'}];
@@ -270,7 +316,7 @@ function renderComparison(){const container=$('comparisonContent');if(!state.sav
 }
 
 /* 11 · Libraries and modal keyboard / touch access */
-function openLibrary(kind){pause();const isProjectile=kind==='projectile',items=isProjectile?projectiles:groundObjects,selected=isProjectile?state.projectile:state.ground;$('libraryTitle').textContent=isProjectile?'مكتبة المقذوفات':'عناصر المشهد الأرضي';$('librarySubtitle').textContent=isProjectile?'ثلاثة نماذج تعليمية خيالية، بلا دفع بعد الإطلاق. اختيار الشكل يحافظ على الإعدادات والزمن والمسار.':'اسحب العنصر أفقيًا لتغيير موضعه.';$('libraryGrid').innerHTML=items.map(a=>`<button class="asset-card" data-asset="${a.id}" aria-pressed="${a.id===selected}">${svgAsset(a.svg,isProjectile?'-65 -36 130 72':'0 0 205 135')}<strong>${a.name}</strong>${isProjectile?`<p>${a.description}</p>`:''}<span class="selection">${a.id===selected?'محدد حاليًا':'اختيار النموذج'}</span></button>`).join('');$('libraryGrid').querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>{if(isProjectile)state.projectile=b.dataset.asset;else state.ground=b.dataset.asset;updateModelPreview();renderStaticScene();$('libraryDialog').close();toast(isProjectile?'تم تغيير النموذج مع الحفاظ على الإعدادات.':'تم تحديث عنصر المشهد.');});$('libraryDialog').showModal();}
+function openLibrary(kind){pause();const isProjectile=kind==='projectile',items=isProjectile?projectiles:groundObjects,selected=isProjectile?state.projectile:state.ground;$('libraryTitle').textContent=isProjectile?'مكتبة المقذوفات':'عناصر المشهد الأرضي';$('librarySubtitle').textContent=isProjectile?'ثلاثة نماذج تعليمية خيالية، بلا دفع بعد الإطلاق. اختيار الشكل يحافظ على الإعدادات والزمن والمسار.':'اسحب العنصر أفقيًا لتغيير موضعه.';$('libraryGrid').innerHTML=items.map(a=>`<button class="asset-card" data-asset="${a.id}" aria-pressed="${a.id===selected}">${svgAsset(a.svg,isProjectile?'-65 -36 130 72':'0 0 205 135')}<strong>${a.name}</strong>${isProjectile?`<p>${a.description}</p>`:''}<span class="selection">${a.id===selected?'محدد حاليًا':'اختيار النموذج'}</span></button>`).join('');$('libraryGrid').querySelectorAll('[data-asset]').forEach(b=>b.onclick=()=>{if(isProjectile)state.projectile=b.dataset.asset;else{state.ground=b.dataset.asset;clearImpact();}updateModelPreview();renderStaticScene();$('libraryDialog').close();toast(isProjectile?'تم تغيير النموذج مع الحفاظ على الإعدادات.':'تم تحديث عنصر المشهد.');});$('libraryDialog').showModal();}
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('dialog').close());
 document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
 
